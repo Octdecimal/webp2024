@@ -35,6 +35,7 @@
 
 <script>
 var container = document.getElementById('container');
+var wrong = 0;
 
 function randomChar() {
   return String.fromCharCode(97 + Math.floor(Math.random() * 26));
@@ -58,6 +59,16 @@ function generalRandomString() {
   return result;
 }
 
+function extraRandomString() {
+  var length = 6;
+  var result = '';
+  for (var i = 0; i < length; i++) {
+    result += randomChar();
+  }
+  return result;
+}
+
+
 window.onload = function() {
   container.textContent = initialRandomString();
 };
@@ -66,11 +77,22 @@ window.addEventListener("keyup", function(e) {
   if (e.key == 'Escape') {
     container.textContent = "";
   }
-  var textContent = container.textContent;
-  var firstChar = textContent.substring(0, 1);
+
+  var firstChar = container.textContent.charAt(0, 1);
 
   if (e.key === firstChar) {
-    container.textContent = textContent.substring(1);
+    container.textContent = container.textContent.slice(1);
+    if (wrong != 0) {
+      wrong -= 1;
+    }
+  } else {
+    wrong += 1;
+  }
+
+  if (wrong === 3) {
+    var extraRandomChars = extraRandomString();
+    container.textContent += extraRandomChars;
+    wrong = 0;
   }
   var randomChars = generalRandomString();
   container.textContent += randomChars;

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HW2-B1129037</title>
+<!-- 個人預期中文將使用「標楷體」，而英文和數字將使用「Times New Roman」 -->
+<!-- 個人喜好紅色，故對style進行改動 -->
+<style>
+  body {
+    font-family: '標楷體', 'Times New Roman';
+    margin: 20px;
+}
+    margin: 20px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  th {
+    background-color: #f70202;
+    color: white;
+  }
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  #pagination {
+    margin-top: 20px;
+    text-align: center;
+  }
+  #pagination button {
+    font-family: '標楷體', 'Times New Roman';
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    background-color: #f70202;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  #pagination button:hover {
+    background-color: #a80f0a;
+  }
+
+  #searchInput {
+    width: 300px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-family: '標楷體', 'Times New Roman';
+}
+</style>
+</head>
+<body>
+
+<h1>景點觀光展覽資訊</h1>
+<input type="text" id="searchInput" onkeyup="searchTitle()" onchange="searchTitle()" placeholder="在名稱中查詢...">
+<table>
+  <thead>
+    <tr>
+      <th style="width: 15%;">名稱</th>
+      <th style="width: 15%;">地點</th>
+      <th style="width: 70%;">票價</th>
+      <!-- 如果單元格中的內容超出預設寬度，將會自動調整寬度以容納內容，但我找到可以用的寬度設定 -->
+    </tr>
+  </thead>
+  <tbody id="csie">
+    <!-- JavaScript 發生的地方-->
+  </tbody>
+</table>
+
+<div id="pagination">
+  <button onclick="prevPage()">上一頁</button>
+  <span id="pageInfo"></span>
+  <button onclick="nextPage()">下一頁</button>
+</div>
+
+<script>
+var openUrl = "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=6";
+var xhr = new XMLHttpRequest();
+xhr.open('GET', openUrl, true);
+xhr.send();
+xhr.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    var dataset = JSON.parse(this.responseText);
+    addNewData(dataset);
+  }
+};
+
+var currentPage = 1;
+var itemsPerPage = 10;
+var dataset; // 全域變數
+
+xhr.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    dataset = JSON.parse(this.responseText); // 確保這裡是全域變數
+    addNewData(dataset);
+  }
+};
+
+function prevPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    addNewData(dataset);
+  }
+}
+
+function nextPage() {
+  var totalPages = Math.ceil(dataset.length / itemsPerPage);
+  if (currentPage < totalPages) {
+    currentPage++;
+    addNewData(dataset);
+  }
+}
+
+var filteredData = [];
+
+function searchTitle() {
+  console.log("searchTitle is triggered");
+  var input, filter;
+  input = document.getElementById("searchInput");
+  filter = input.value.toUpperCase();
+  filteredData = dataset.filter(function(item) {
+    return item['title'].toUpperCase().indexOf(filter) > -1;
+  });
+  currentPage = 1; // Reset to first page
+  addNewData(filteredData); // Add new filtered data
+}
+
+function addNewData(data) {
+  var myTable = document.getElementById("csie");
+  myTable.innerHTML = ''; // Clear table body before adding new data
+  var startIndex = (currentPage - 1) * itemsPerPage;
+  var endIndex = Math.min(startIndex + itemsPerPage, data.length);
+  for (var i = startIndex; i < endIndex; i++) {
+    var row = myTable.insertRow(-1);
+    row.insertCell(0).innerHTML = data[i]['title'];
+    row.insertCell(1).innerHTML = data[i]['showInfo'][0]['location'];
+    row.insertCell(2).innerHTML = data[i]['showInfo'][0]['price'];
+  }
+  updatePaginationInfo();
+}
+
+function updatePaginationInfo() {
+  var totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  var pageInfo = document.getElementById('pageInfo');
+  pageInfo.textContent = "第 " + currentPage + " 頁 / 共 " + (totalPages || 1) + " 頁"; // 如果 totalPages 為 0，則顯示為 1 頁
+}
+</script>
+
+</body>
+</html>
