@@ -110,7 +110,7 @@ function prevPage() {
 }
 
 function nextPage() {
-  var totalPages = Math.ceil(dataset.length / itemsPerPage);
+  var totalPages = Math.ceil(filteredData.length / itemsPerPage);
   if (currentPage < totalPages) {
     currentPage++;
     addNewData(dataset);
