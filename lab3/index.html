@@ -48,8 +48,10 @@ function getimg() {
 }
 function add_new_img(photos) {
   var gal = document.getElementById("gallery");
+  gallery.innerHTML = '';
   photos.forEach(function(photo) {
     var img_Url =`https://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=ca370d51a054836007519a00ff4ce59e&photo_id=${photo.id}&format=json&nojsoncallback=1`;
+    // 使用id=${photo.id}尋找圖片支援的大小
     fetch(img_Url)
     .then(response => response.json())
     .then(data => {
@@ -64,10 +66,12 @@ function add_new_img(photos) {
 
 function getImageUrl(sizes) {
   for (var i = 0; i < sizes.length; i++) {
-    if (sizes[i].label === "Medium") {
+    if (sizes[i].label === "Large") {
       return sizes[i].source;
     }
   }
+  return sizes[sizes.length - 1].source;
+  //如果該圖片有'Large'，則用'Large'，否則使用可支援的最大尺寸
 }
 </script>
 </body>
