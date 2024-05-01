@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import CGU_Login from './cgu_login.js'
 import './App.css';
 
