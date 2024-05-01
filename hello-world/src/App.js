@@ -1,21 +1,18 @@
-//import logo from './logo.svg';
+import MultiButton from './cgu_multiButton';
 import './App.css';
-
-const changeText=(event)=>{
-  console.log(event.target)
-  event.target.innerText += "🐈"
-}
-
-const styleArgument = { fontSize: '100px', color: 'red' };
+import HelloCGU from './cgu_hello';
 
 function App() {
   return (
     <div className="App">
-      <h1 style = {styleArgument} onClick = {changeText}> 🐈
-      </h1>
+      <div>
+        { HelloCGU() }
+      </div>
+      <div>
+        { MultiButton(10) }
+      </div>
     </div>
   );
 }
-
 
 export default App;
