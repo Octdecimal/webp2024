@@ -45,7 +45,6 @@ const HW3 = () => {
 
   return (
     <div style={{ height: 635, width: '100%' }}>
-      {/* <h1 style={{ height: 0, textAlign: 'left', marginBottom: 15 }} >景點觀光展覽資訊</h1> */}
       <input
         type="text"
         onChange={handleSearchTitle}
